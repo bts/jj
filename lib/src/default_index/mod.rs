@@ -1034,17 +1034,17 @@ mod tests {
         index.add_commit_data(id_4.clone(), new_change_id(), &[id_1.clone()]);
         index.add_commit_data(id_5.clone(), new_change_id(), &[id_4.clone(), id_2.clone()]);
 
-        assert!(index.is_ancestor(&id_0, &id_0));
-        assert!(index.is_ancestor(&id_0, &id_1));
-        assert!(index.is_ancestor(&id_2, &id_3));
-        assert!(index.is_ancestor(&id_2, &id_5));
-        assert!(index.is_ancestor(&id_1, &id_5));
-        assert!(index.is_ancestor(&id_0, &id_5));
-        assert!(!index.is_ancestor(&id_1, &id_0));
-        assert!(!index.is_ancestor(&id_5, &id_3));
-        assert!(!index.is_ancestor(&id_3, &id_5));
-        assert!(!index.is_ancestor(&id_2, &id_4));
-        assert!(!index.is_ancestor(&id_4, &id_2));
+        assert!(index.is_ancestor_impl(&id_0, &id_0));
+        assert!(index.is_ancestor_impl(&id_0, &id_1));
+        assert!(index.is_ancestor_impl(&id_2, &id_3));
+        assert!(index.is_ancestor_impl(&id_2, &id_5));
+        assert!(index.is_ancestor_impl(&id_1, &id_5));
+        assert!(index.is_ancestor_impl(&id_0, &id_5));
+        assert!(!index.is_ancestor_impl(&id_1, &id_0));
+        assert!(!index.is_ancestor_impl(&id_5, &id_3));
+        assert!(!index.is_ancestor_impl(&id_3, &id_5));
+        assert!(!index.is_ancestor_impl(&id_2, &id_4));
+        assert!(!index.is_ancestor_impl(&id_4, &id_2));
     }
 
     #[test]

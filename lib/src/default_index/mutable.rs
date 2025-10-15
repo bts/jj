@@ -476,6 +476,14 @@ impl DefaultMutableIndex {
         self.0.into_mutable().expect("must have mutable")
     }
 
+    pub(super) fn is_ancestor_impl(
+        &self,
+        ancestor_id: &CommitId,
+        descendant_id: &CommitId,
+    ) -> bool {
+        self.0.commits().is_ancestor(ancestor_id, descendant_id)
+    }
+
     fn mutable_commits(&mut self) -> &mut MutableCommitIndexSegment {
         self.0.mutable_commits().expect("must have mutable")
     }
@@ -560,8 +568,8 @@ impl Index for DefaultMutableIndex {
         self.0.has_id(commit_id)
     }
 
-    fn is_ancestor(&self, ancestor_id: &CommitId, descendant_id: &CommitId) -> bool {
-        self.0.is_ancestor(ancestor_id, descendant_id)
+    fn is_ancestor(&self, ancestor_id: &CommitId, descendant_id: &CommitId) -> IndexResult<bool> {
+        Ok(self.is_ancestor_impl(ancestor_id, descendant_id))
     }
 
     fn common_ancestors(&self, set1: &[CommitId], set2: &[CommitId]) -> Vec<CommitId> {
