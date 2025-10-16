@@ -632,10 +632,6 @@ impl DefaultReadonlyIndex {
         self.0.commits().has_id(commit_id)
     }
 
-    pub fn is_ancestor_impl(&self, ancestor_id: &CommitId, descendant_id: &CommitId) -> bool {
-        self.0.commits().is_ancestor(ancestor_id, descendant_id)
-    }
-
     /// Returns the number of all indexed commits.
     pub fn num_commits(&self) -> u32 {
         self.0.commits().num_commits()
@@ -708,6 +704,11 @@ impl DefaultReadonlyIndex {
         Ok(DefaultReadonlyIndexRevset { inner })
     }
 
+    #[doc(hidden)] // for tests
+    pub fn is_ancestor_impl(&self, ancestor_id: &CommitId, descendant_id: &CommitId) -> bool {
+        self.0.commits().is_ancestor(ancestor_id, descendant_id)
+    }
+
     pub(super) fn start_modification(&self) -> DefaultMutableIndex {
         DefaultMutableIndex::incremental(self)
     }
@@ -739,7 +740,7 @@ impl Index for DefaultReadonlyIndex {
         Ok(self.is_ancestor_impl(ancestor_id, descendant_id))
     }
 
-    fn common_ancestors(&self, set1: &[CommitId], set2: &[CommitId]) -> Vec<CommitId> {
+    fn common_ancestors(&self, set1: &[CommitId], set2: &[CommitId]) -> IndexResult<Vec<CommitId>> {
         self.0.common_ancestors(set1, set2)
     }
 

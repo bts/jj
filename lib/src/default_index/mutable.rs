@@ -484,6 +484,14 @@ impl DefaultMutableIndex {
         self.0.commits().is_ancestor(ancestor_id, descendant_id)
     }
 
+    pub(crate) fn common_ancestors_impl(
+        &self,
+        set1: &[CommitId],
+        set2: &[CommitId],
+    ) -> Vec<CommitId> {
+        self.0.commits().common_ancestors(set1, set2)
+    }
+
     fn mutable_commits(&mut self) -> &mut MutableCommitIndexSegment {
         self.0.mutable_commits().expect("must have mutable")
     }
@@ -572,8 +580,8 @@ impl Index for DefaultMutableIndex {
         Ok(self.is_ancestor_impl(ancestor_id, descendant_id))
     }
 
-    fn common_ancestors(&self, set1: &[CommitId], set2: &[CommitId]) -> Vec<CommitId> {
-        self.0.common_ancestors(set1, set2)
+    fn common_ancestors(&self, set1: &[CommitId], set2: &[CommitId]) -> IndexResult<Vec<CommitId>> {
+        Ok(self.common_ancestors_impl(set1, set2))
     }
 
     fn all_heads_for_gc(&self) -> IndexResult<Box<dyn Iterator<Item = CommitId> + '_>> {

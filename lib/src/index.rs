@@ -121,7 +121,7 @@ pub trait Index: Send + Sync {
     /// Returns the best common ancestor or ancestors of the commits in `set1`
     /// and `set2`. A "best common ancestor" has no descendants that are also
     /// common ancestors.
-    fn common_ancestors(&self, set1: &[CommitId], set2: &[CommitId]) -> Vec<CommitId>;
+    fn common_ancestors(&self, set1: &[CommitId], set2: &[CommitId]) -> IndexResult<Vec<CommitId>>;
 
     /// Heads among all indexed commits at the associated operation.
     ///
@@ -225,10 +225,10 @@ pub trait ChangeIdIndex: Send + Sync {
 /// ancestor of descendant_id.
 pub fn any_is_ancestor<'a>(
     index: &dyn Index,
-    ancestor_candidates: impl IntoIterator<Item = &'a CommitId>,
+    ancestor_candidate_ids: impl IntoIterator<Item = &'a CommitId>,
     descendant_id: &CommitId,
 ) -> IndexResult<bool> {
-    let found = ancestor_candidates
+    let found_ancestor = ancestor_candidate_ids
         .into_iter()
         .find_map(
             |ancestor_id| match index.is_ancestor(ancestor_id, descendant_id) {
@@ -239,5 +239,5 @@ pub fn any_is_ancestor<'a>(
         )
         .transpose()?
         .unwrap_or(false);
-    Ok(found)
+    Ok(found_ancestor)
 }

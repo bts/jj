@@ -1075,70 +1075,73 @@ mod tests {
         index.add_commit_data(id_6.clone(), new_change_id(), &[id_4.clone()]);
 
         assert_eq!(
-            index.common_ancestors(&[id_0.clone()], &[id_0.clone()]),
+            index.common_ancestors_impl(&[id_0.clone()], &[id_0.clone()]),
             vec![id_0.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_5.clone()], &[id_5.clone()]),
+            index.common_ancestors_impl(&[id_5.clone()], &[id_5.clone()]),
             vec![id_5.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_1.clone()], &[id_2.clone()]),
+            index.common_ancestors_impl(&[id_1.clone()], &[id_2.clone()]),
             vec![id_0.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_2.clone()], &[id_1.clone()]),
+            index.common_ancestors_impl(&[id_2.clone()], &[id_1.clone()]),
             vec![id_0.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_1.clone()], &[id_4.clone()]),
+            index.common_ancestors_impl(&[id_1.clone()], &[id_4.clone()]),
             vec![id_1.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_4.clone()], &[id_1.clone()]),
+            index.common_ancestors_impl(&[id_4.clone()], &[id_1.clone()]),
             vec![id_1.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_3.clone()], &[id_5.clone()]),
+            index.common_ancestors_impl(&[id_3.clone()], &[id_5.clone()]),
             vec![id_0.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_5.clone()], &[id_3.clone()]),
+            index.common_ancestors_impl(&[id_5.clone()], &[id_3.clone()]),
             vec![id_0.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_2.clone()], &[id_6.clone()]),
+            index.common_ancestors_impl(&[id_2.clone()], &[id_6.clone()]),
             vec![id_0.clone()]
         );
 
         // With multiple commits in an input set
         assert_eq!(
-            index.common_ancestors(&[id_0.clone(), id_1.clone()], &[id_0.clone()]),
+            index.common_ancestors_impl(&[id_0.clone(), id_1.clone()], &[id_0.clone()]),
             vec![id_0.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_0.clone(), id_1.clone()], &[id_1.clone()]),
+            index.common_ancestors_impl(&[id_0.clone(), id_1.clone()], &[id_1.clone()]),
             vec![id_1.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_1.clone(), id_2.clone()], &[id_1.clone()]),
+            index.common_ancestors_impl(&[id_1.clone(), id_2.clone()], &[id_1.clone()]),
             vec![id_1.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_1.clone(), id_2.clone()], &[id_4]),
+            index.common_ancestors_impl(&[id_1.clone(), id_2.clone()], &[id_4]),
             vec![id_1.clone()]
         );
         assert_eq!(
-            index.common_ancestors(&[id_5.clone(), id_6.clone()], &[id_2.clone()]),
+            index.common_ancestors_impl(&[id_5.clone(), id_6.clone()], &[id_2.clone()]),
             &[id_2.clone()]
         );
         // Both 1 and 2 are returned since (5) expands to (2, 4), which expands
         // to (1,2) and matches the (1,2) of the first input set.
         assert_eq!(
-            index.common_ancestors(&[id_1.clone(), id_2.clone()], &[id_5]),
+            index.common_ancestors_impl(&[id_1.clone(), id_2.clone()], &[id_5]),
             vec![id_2.clone(), id_1.clone()]
         );
-        assert_eq!(index.common_ancestors(&[id_1, id_2], &[id_3]), vec![id_0]);
+        assert_eq!(
+            index.common_ancestors_impl(&[id_1, id_2], &[id_3]),
+            vec![id_0]
+        );
     }
 
     #[test]
@@ -1161,7 +1164,7 @@ mod tests {
         index.add_commit_data(id_3.clone(), new_change_id(), &[id_1.clone(), id_2.clone()]);
         index.add_commit_data(id_4.clone(), new_change_id(), &[id_1.clone(), id_2.clone()]);
 
-        let mut common_ancestors = index.common_ancestors(&[id_3], &[id_4]);
+        let mut common_ancestors = index.common_ancestors_impl(&[id_3], &[id_4]);
         common_ancestors.sort();
         assert_eq!(common_ancestors, vec![id_1, id_2]);
     }
@@ -1188,9 +1191,9 @@ mod tests {
         index.add_commit_data(id_4.clone(), new_change_id(), &[id_0.clone(), id_2.clone()]);
         index.add_commit_data(id_5.clone(), new_change_id(), &[id_0, id_2.clone()]);
 
-        let mut common_ancestors = index.common_ancestors(&[id_4], &[id_5]);
-        common_ancestors.sort();
-        assert_eq!(common_ancestors, vec![id_2]);
+        let mut common_ancestor_ids = index.common_ancestors_impl(&[id_4], &[id_5]);
+        common_ancestor_ids.sort();
+        assert_eq!(common_ancestor_ids, vec![id_2]);
     }
 
     #[test]
