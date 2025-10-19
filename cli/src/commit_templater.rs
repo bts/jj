@@ -438,7 +438,9 @@ pub enum CommitTemplatePropertyKind<'repo> {
 }
 
 template_builder::impl_core_property_wrappers!(<'repo> CommitTemplatePropertyKind<'repo> => Core);
-operation_templater::impl_operation_property_wrappers!(<'repo> CommitTemplatePropertyKind<'repo> => Operation);
+operation_templater::impl_operation_property_wrappers!(
+    <'repo> CommitTemplatePropertyKind<'repo> => Operation
+);
 template_builder::impl_property_wrappers!(<'repo> CommitTemplatePropertyKind<'repo> {
     Commit(Commit),
     CommitOpt(Option<Commit>),

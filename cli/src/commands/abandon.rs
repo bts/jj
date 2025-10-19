@@ -106,7 +106,7 @@ pub(crate) fn cmd_abandon(
         return Ok(());
     }
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let options = RewriteRefsOptions {
         delete_abandoned_bookmarks: !args.retain_bookmarks,
     };

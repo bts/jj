@@ -258,7 +258,7 @@ fn test_checkout_file_transitions(backend: TestRepoBackend) {
                 return;
             }
             Kind::GitSubmodule => {
-                let mut tx = repo.start_transaction();
+                let mut tx = repo.start_transaction().unwrap();
                 let id = write_random_commit(tx.repo_mut()).id().clone();
                 tx.commit("test").unwrap();
                 Merge::normal(TreeValue::GitSubmodule(id))
@@ -1367,7 +1367,7 @@ fn test_git_submodule(gitignore_content: &str) {
         base_ignores,
         ..empty_snapshot_options()
     };
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
 
     // Add files in sub directory. Sub directories are traversed differently
     // depending on .gitignore. #5246

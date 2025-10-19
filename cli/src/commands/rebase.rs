@@ -391,7 +391,7 @@ pub(crate) fn cmd_rebase(
         plan_rebase_branch(ui, &workspace_command, &args.branch, &args.destination)?
     };
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let mut computed_move = compute_move_commits(tx.repo(), &loc)?;
     if !args.keep_divergent {
         let abandoned_divergent =

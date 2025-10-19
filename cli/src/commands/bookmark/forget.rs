@@ -66,7 +66,7 @@ pub fn cmd_bookmark_forget(
     let mut workspace_command = command.workspace_helper(ui)?;
     let repo = workspace_command.repo().clone();
     let matched_bookmarks = find_forgettable_bookmarks(repo.view(), &args.names)?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let mut forgotten_remote: usize = 0;
     for (name, bookmark_target) in &matched_bookmarks {
         tx.repo_mut()

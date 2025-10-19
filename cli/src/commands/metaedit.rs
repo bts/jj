@@ -168,7 +168,7 @@ pub(crate) fn cmd_metaedit(
         return Ok(());
     }
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let tx_description = match commit_ids.as_slice() {
         [] => unreachable!(),
         [commit] => format!("edit commit metadata for commit {}", commit.hex()),

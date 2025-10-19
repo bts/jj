@@ -97,7 +97,7 @@ pub(crate) fn cmd_absorb(
 
     workspace_command.check_rewritable(selected_trees.target_commits.keys())?;
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let stats = absorb_hunks(tx.repo_mut(), &source, selected_trees.target_commits)?;
 
     if let Some(mut formatter) = ui.status_formatter() {

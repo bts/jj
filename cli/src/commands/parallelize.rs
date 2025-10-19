@@ -97,7 +97,7 @@ pub(crate) fn cmd_parallelize(
     }
 
     workspace_command.check_rewritable(needs_rewrite)?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
 
     // If a commit outside the target set has a commit in the target set as parent,
     // then - after the transformation - it should also have that commit's

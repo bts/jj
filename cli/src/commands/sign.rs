@@ -88,7 +88,7 @@ pub fn cmd_sign(ui: &mut Ui, command: &CommandHelper, args: &SignArgs) -> Result
         .commits(workspace_command.repo().store())
         .try_collect()?;
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
 
     let mut signed_commits = vec![];
     let mut num_reparented = 0;

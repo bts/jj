@@ -63,7 +63,7 @@ pub fn cmd_op_revert(
         Err(_) => return Err(user_error("Cannot revert a merge operation")),
     };
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let repo_loader = tx.base_repo().loader();
     let bad_repo = repo_loader.load_at(&bad_op)?;
     let parent_repo = repo_loader.load_at(&parent_of_bad_op)?;

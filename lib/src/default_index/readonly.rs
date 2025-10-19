@@ -775,8 +775,8 @@ impl ReadonlyIndex for DefaultReadonlyIndex {
         Ok(Box::new(ChangeIdIndexImpl::new(self.clone(), heads)))
     }
 
-    fn start_modification(&self) -> Box<dyn MutableIndex> {
-        Box::new(Self::start_modification(self))
+    fn start_modification(&self) -> IndexResult<Box<dyn MutableIndex>> {
+        Ok(Box::new(Self::start_modification(self)))
     }
 }
 

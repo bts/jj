@@ -244,7 +244,7 @@ pub(crate) fn cmd_squash(
         }
     };
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let mut num_rebased = 0;
     let destination = if let Some(commit) = pre_existing_destination {
         commit

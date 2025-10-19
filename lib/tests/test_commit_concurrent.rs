@@ -57,7 +57,7 @@ fn test_commit_parallel(backend: TestRepoBackend) {
         for _ in 0..num_threads {
             let repo = repo.clone();
             s.spawn(move || {
-                let mut tx = repo.start_transaction();
+                let mut tx = repo.start_transaction().unwrap();
                 write_random_commit(tx.repo_mut());
                 tx.commit("test").unwrap();
             });
@@ -88,7 +88,7 @@ fn test_commit_parallel_instances(backend: TestRepoBackend) {
             let settings = settings.clone();
             let repo = test_env.load_repo_at_head(&settings, test_workspace.repo_path());
             s.spawn(move || {
-                let mut tx = repo.start_transaction();
+                let mut tx = repo.start_transaction().unwrap();
                 write_random_commit(tx.repo_mut());
                 tx.commit("test").unwrap();
             });

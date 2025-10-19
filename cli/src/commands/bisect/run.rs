@@ -229,7 +229,7 @@ fn evaluate_commit(
     mut cmd: std::process::Command,
     commit: &Commit,
 ) -> Result<Evaluation, CommandError> {
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let commit_id_hex = commit.id().hex();
     tx.check_out(commit)?;
     tx.finish(

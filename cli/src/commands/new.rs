@@ -184,7 +184,7 @@ pub(crate) fn cmd_new(
 
     let parent_commit_ids_set: HashSet<CommitId> = parent_commit_ids.iter().cloned().collect();
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let merged_tree = merge_commit_trees(tx.repo(), &parent_commits).block_on()?;
     let mut commit_builder = tx
         .repo_mut()

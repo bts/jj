@@ -183,7 +183,7 @@ pub fn cmd_undo(ui: &mut Ui, command: &CommandHelper, args: &UndoArgs) -> Result
             .load_operation(&id_of_original_op)?;
     }
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let new_view = view_with_desired_portions_restored(
         op_to_restore.view()?.store_view(),
         tx.base_repo().view().store_view(),

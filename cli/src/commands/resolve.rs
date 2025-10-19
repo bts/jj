@@ -117,7 +117,7 @@ pub(crate) fn cmd_resolve(
         .collect_vec();
     workspace_command.check_rewritable([commit.id()])?;
     let merge_editor = workspace_command.merge_editor(ui, args.tool.as_deref())?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let (new_tree_id, partial_resolution_error) =
         merge_editor.edit_files(ui, &tree, &repo_paths)?;
     let new_commit = tx

@@ -83,7 +83,7 @@ pub fn cmd_tag_set(
         writeln!(ui.warning_default(), "Target revision is empty.")?;
     }
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     for name in &args.names {
         tx.repo_mut()
             .set_local_tag_target(name, RefTarget::normal(target_commit.id().clone()));

@@ -51,7 +51,7 @@ pub fn cmd_tag_delete(
     let mut workspace_command = command.workspace_helper(ui)?;
     let repo = workspace_command.repo().clone();
     let matched_tags = find_local_tags(repo.view(), &args.names)?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     for (name, _) in &matched_tags {
         tx.repo_mut()
             .set_local_tag_target(name, RefTarget::absent());

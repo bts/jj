@@ -67,7 +67,7 @@ pub fn cmd_unsign(
         .filter(|commit| commit.is_signed())
         .collect();
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
 
     let mut unsigned_commits = vec![];
     let mut num_reparented = 0;

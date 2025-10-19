@@ -51,7 +51,7 @@ pub fn cmd_op_restore(
 ) -> Result<(), CommandError> {
     let mut workspace_command = command.workspace_helper(ui)?;
     let target_op = workspace_command.resolve_single_op(&args.operation)?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let new_view = view_with_desired_portions_restored(
         target_op.view()?.store_view(),
         tx.base_repo().view().store_view(),

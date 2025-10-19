@@ -69,7 +69,7 @@ fn test_bisect_linear() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let root_commit = repo.store().root_commit();
     let commit1 = write_random_commit(tx.repo_mut());
     let commit2 = write_random_commit_with_parents(tx.repo_mut(), &[&commit1]);
@@ -193,7 +193,7 @@ fn test_bisect_nonlinear() {
     // 1 2
     // |/
     // 0
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let root_commit = repo.store().root_commit();
     let commit1 = write_random_commit(tx.repo_mut());
     let commit2 = write_random_commit(tx.repo_mut());
@@ -250,7 +250,7 @@ fn test_bisect_disjoint_sets() {
     // 1 2
     // |/
     // 0
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let commit2 = write_random_commit(tx.repo_mut());
 

@@ -167,7 +167,7 @@ pub(crate) fn cmd_restore(
     if &new_tree_id == to_commit.tree_id() {
         writeln!(ui.status(), "Nothing changed.")?;
     } else {
-        let mut tx = workspace_command.start_transaction();
+        let mut tx = workspace_command.start_transaction()?;
         tx.repo_mut()
             .rewrite_commit(&to_commit)
             .set_tree_id(new_tree_id)

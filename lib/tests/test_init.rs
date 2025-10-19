@@ -44,7 +44,7 @@ fn test_init_local() {
     assert_eq!(workspace.workspace_root(), &canonical);
 
     // Just test that we can write a commit to the store
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     write_random_commit(tx.repo_mut());
 }
 
@@ -68,7 +68,7 @@ fn test_init_internal_git() {
     );
 
     // Just test that we can write a commit to the store
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     write_random_commit(tx.repo_mut());
 }
 
@@ -89,7 +89,7 @@ fn test_init_colocated_git() {
     );
 
     // Just test that we can write a commit to the store
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     write_random_commit(tx.repo_mut());
 }
 
@@ -119,7 +119,7 @@ fn test_init_external_git() {
     );
 
     // Just test that we can write a commit to the store
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     write_random_commit(tx.repo_mut());
 }
 
@@ -203,6 +203,6 @@ fn test_init_load_non_utf8_path() {
 
     // Just test that we can write a commit to the store
     let repo = workspace.repo_loader().load_at_head().unwrap();
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     write_random_commit(tx.repo_mut());
 }

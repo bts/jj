@@ -116,7 +116,7 @@ fn test_gc() {
     // |/
     // B
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -189,7 +189,7 @@ fn test_gc() {
     );
 
     // G is no longer reachable
-    let mut mut_index = base_index.start_modification();
+    let mut mut_index = base_index.start_modification().unwrap();
     mut_index.add_commit(&commit_a).unwrap();
     mut_index.add_commit(&commit_b).unwrap();
     mut_index.add_commit(&commit_c).unwrap();
@@ -208,7 +208,7 @@ fn test_gc() {
     );
 
     // D|E|H are no longer reachable
-    let mut mut_index = base_index.start_modification();
+    let mut mut_index = base_index.start_modification().unwrap();
     mut_index.add_commit(&commit_a).unwrap();
     mut_index.add_commit(&commit_b).unwrap();
     mut_index.add_commit(&commit_c).unwrap();
@@ -223,7 +223,7 @@ fn test_gc() {
     );
 
     // B|C|F are no longer reachable
-    let mut mut_index = base_index.start_modification();
+    let mut mut_index = base_index.start_modification().unwrap();
     mut_index.add_commit(&commit_a).unwrap();
     repo.store().gc(mut_index.as_index(), now()).unwrap();
     assert_eq!(
@@ -249,7 +249,7 @@ fn test_copy_detection() {
         repo_path_buf("file2"),
     ];
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = make_commit(
         &mut tx,
         vec![repo.store().root_commit_id().clone()],
@@ -301,7 +301,7 @@ fn test_copy_detection_file_and_dir() {
     // a -> b (file)
     // b -> a (dir)
     // c -> c/file (file)
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = make_commit(
         &mut tx,
         vec![repo.store().root_commit_id().clone()],

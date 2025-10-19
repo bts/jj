@@ -226,7 +226,7 @@ pub fn cmd_git_push(
         &default_remote
     };
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let view = tx.repo().view();
     let tx_description;
     let mut bookmark_updates = vec![];

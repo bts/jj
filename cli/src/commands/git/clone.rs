@@ -208,7 +208,7 @@ pub fn cmd_git_clone(
             .view()
             .get_remote_bookmark(working_symbol);
         if let Some(commit_id) = working_branch_remote_ref.target.as_normal().cloned() {
-            let mut tx = workspace_command.start_transaction();
+            let mut tx = workspace_command.start_transaction()?;
             if let Ok(commit) = tx.repo().store().get_commit(&commit_id) {
                 tx.check_out(&commit)?;
             }
@@ -255,7 +255,7 @@ fn configure_remote(
     fetch_tags: FetchTagsMode,
     branch_patterns: Option<&[StringPattern]>,
 ) -> Result<WorkspaceCommandHelper, CommandError> {
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     git::add_remote(
         tx.repo_mut(),
         remote_name,
@@ -293,7 +293,7 @@ fn fetch_new_remote(
     let settings = workspace_command.settings();
     let git_settings = settings.git_settings()?;
     let should_track_default = settings.get_bool("git.track-default-bookmark-on-clone")?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let (default_branch, import_stats) = {
         let mut git_fetch = GitFetch::new(tx.repo_mut(), &git_settings)?;
 

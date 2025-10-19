@@ -204,7 +204,7 @@ pub fn cmd_gerrit_upload(
     // their Cargo.toml.
     // commit_trailers = 'if(!trailers.contains_key("Change-Id"),
     // format_gerrit_change_id_trailer(self))'
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let base_repo = tx.base_repo();
     let store = base_repo.store().clone();
 

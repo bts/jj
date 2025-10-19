@@ -46,11 +46,11 @@ fn test_walk_predecessors_basic() {
     let repo0 = test_repo.repo;
     let root_commit = repo0.store().root_commit();
 
-    let mut tx = repo0.start_transaction();
+    let mut tx = repo0.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let repo1 = tx.commit("test").unwrap();
 
-    let mut tx = repo1.start_transaction();
+    let mut tx = repo1.start_transaction().unwrap();
     let commit2 = tx
         .repo_mut()
         .rewrite_commit(&commit1)
@@ -90,11 +90,11 @@ fn test_walk_predecessors_basic_legacy_op() {
     let repo0 = test_repo.repo;
     let loader = repo0.loader();
 
-    let mut tx = repo0.start_transaction();
+    let mut tx = repo0.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let repo1 = tx.commit("test").unwrap();
 
-    let mut tx = repo1.start_transaction();
+    let mut tx = repo1.start_transaction().unwrap();
     let commit2 = tx
         .repo_mut()
         .rewrite_commit(&commit1)
@@ -130,11 +130,11 @@ fn test_walk_predecessors_concurrent_ops() {
     let test_repo = TestRepo::init();
     let repo0 = test_repo.repo;
 
-    let mut tx = repo0.start_transaction();
+    let mut tx = repo0.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let repo1 = tx.commit("test").unwrap();
 
-    let mut tx2 = repo1.start_transaction();
+    let mut tx2 = repo1.start_transaction().unwrap();
     let commit2 = tx2
         .repo_mut()
         .rewrite_commit(&commit1)
@@ -142,7 +142,7 @@ fn test_walk_predecessors_concurrent_ops() {
         .write()
         .unwrap();
     tx2.repo_mut().rebase_descendants().unwrap();
-    let mut tx3 = repo1.start_transaction();
+    let mut tx3 = repo1.start_transaction().unwrap();
     let commit3 = tx3
         .repo_mut()
         .rewrite_commit(&commit1)
@@ -158,7 +158,7 @@ fn test_walk_predecessors_concurrent_ops() {
         .collect_array()
         .unwrap();
 
-    let mut tx = repo4.start_transaction();
+    let mut tx = repo4.start_transaction().unwrap();
     let commit4 = tx
         .repo_mut()
         .rewrite_commit(&commit2)
@@ -204,15 +204,15 @@ fn test_walk_predecessors_multiple_predecessors_across_ops() {
     let test_repo = TestRepo::init();
     let repo0 = test_repo.repo;
 
-    let mut tx = repo0.start_transaction();
+    let mut tx = repo0.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let repo1 = tx.commit("test").unwrap();
 
-    let mut tx = repo1.start_transaction();
+    let mut tx = repo1.start_transaction().unwrap();
     let commit2 = write_random_commit(tx.repo_mut());
     let repo2 = tx.commit("test").unwrap();
 
-    let mut tx = repo2.start_transaction();
+    let mut tx = repo2.start_transaction().unwrap();
     let commit3 = tx
         .repo_mut()
         .rewrite_commit(&commit2)
@@ -245,12 +245,12 @@ fn test_walk_predecessors_multiple_predecessors_within_op() {
     let test_repo = TestRepo::init();
     let repo0 = test_repo.repo;
 
-    let mut tx = repo0.start_transaction();
+    let mut tx = repo0.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let commit2 = write_random_commit(tx.repo_mut());
     let repo1 = tx.commit("test").unwrap();
 
-    let mut tx = repo1.start_transaction();
+    let mut tx = repo1.start_transaction().unwrap();
     let commit3 = tx
         .repo_mut()
         .rewrite_commit(&commit1)
@@ -282,11 +282,11 @@ fn test_walk_predecessors_transitive() {
     let test_repo = TestRepo::init();
     let repo0 = test_repo.repo;
 
-    let mut tx = repo0.start_transaction();
+    let mut tx = repo0.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let repo1 = tx.commit("test").unwrap();
 
-    let mut tx = repo1.start_transaction();
+    let mut tx = repo1.start_transaction().unwrap();
     let commit2 = tx
         .repo_mut()
         .rewrite_commit(&commit1)
@@ -328,7 +328,7 @@ fn test_walk_predecessors_transitive_graph_order() {
     // |/   :
     // 1    :
 
-    let mut tx = repo0.start_transaction();
+    let mut tx = repo0.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let commit2 = tx
         .repo_mut()
@@ -351,7 +351,7 @@ fn test_walk_predecessors_transitive_graph_order() {
     tx.repo_mut().rebase_descendants().unwrap();
     let repo1 = tx.commit("test").unwrap();
 
-    let mut tx = repo1.start_transaction();
+    let mut tx = repo1.start_transaction().unwrap();
     let commit5 = tx
         .repo_mut()
         .rewrite_commit(&commit4)
@@ -395,11 +395,11 @@ fn test_walk_predecessors_unsimplified() {
     // |/
     // 1
 
-    let mut tx = repo0.start_transaction();
+    let mut tx = repo0.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let repo1 = tx.commit("test").unwrap();
 
-    let mut tx = repo1.start_transaction();
+    let mut tx = repo1.start_transaction().unwrap();
     let commit2 = tx
         .repo_mut()
         .rewrite_commit(&commit1)
@@ -409,7 +409,7 @@ fn test_walk_predecessors_unsimplified() {
     tx.repo_mut().rebase_descendants().unwrap();
     let repo2 = tx.commit("test").unwrap();
 
-    let mut tx = repo2.start_transaction();
+    let mut tx = repo2.start_transaction().unwrap();
     let commit3 = tx
         .repo_mut()
         .rewrite_commit(&commit1)
@@ -442,7 +442,7 @@ fn test_walk_predecessors_direct_cycle_within_op() {
     let repo0 = test_repo.repo;
     let loader = repo0.loader();
 
-    let mut tx = repo0.start_transaction();
+    let mut tx = repo0.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let repo1 = tx.commit("test").unwrap();
 
@@ -467,7 +467,7 @@ fn test_walk_predecessors_indirect_cycle_within_op() {
     let repo0 = test_repo.repo;
     let loader = repo0.loader();
 
-    let mut tx = repo0.start_transaction();
+    let mut tx = repo0.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let commit2 = write_random_commit(tx.repo_mut());
     let commit3 = write_random_commit(tx.repo_mut());
@@ -532,26 +532,26 @@ fn test_accumulate_predecessors() {
     // A   {a1: [], a2: [], a3: []}
     // 0
 
-    let mut tx = repo_0.start_transaction();
+    let mut tx = repo_0.start_transaction().unwrap();
     let commit_a1 = new_commit(tx.repo_mut(), "a1");
     let commit_a2 = new_commit(tx.repo_mut(), "a2");
     let commit_a3 = new_commit(tx.repo_mut(), "a3");
     let repo_a = tx.commit("a").unwrap();
 
-    let mut tx = repo_a.start_transaction();
+    let mut tx = repo_a.start_transaction().unwrap();
     let commit_b1 = rewrite_commit(tx.repo_mut(), &[&commit_a1], "b1");
     let commit_b2 = rewrite_commit(tx.repo_mut(), &[&commit_a2, &commit_a3], "b2");
     tx.repo_mut().rebase_descendants().unwrap();
     let repo_b = tx.commit("b").unwrap();
 
-    let mut tx = repo_b.start_transaction();
+    let mut tx = repo_b.start_transaction().unwrap();
     let commit_c1 = rewrite_commit(tx.repo_mut(), &[&commit_b1], "c1");
     let commit_c2 = rewrite_commit(tx.repo_mut(), &[&commit_b2, &commit_a3], "c2");
     let commit_c3 = rewrite_commit(tx.repo_mut(), &[&commit_c2], "c3");
     tx.repo_mut().rebase_descendants().unwrap();
     let repo_c = tx.commit("c").unwrap();
 
-    let mut tx = repo_a.start_transaction();
+    let mut tx = repo_a.start_transaction().unwrap();
     let commit_d1 = rewrite_commit(tx.repo_mut(), &[&commit_a1], "d1");
     let commit_d2 = rewrite_commit(tx.repo_mut(), &[&commit_a2], "d2");
     tx.repo_mut().rebase_descendants().unwrap();

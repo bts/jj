@@ -81,7 +81,7 @@ fn test_merge_criss_cross() {
     let tree_e = create_tree(repo, &[(path, "1\n2\n3E\n4\n5\n6\n7\n8B\n9\n")]);
     let tree_expected = create_tree(repo, &[(path, "1\n2\n3E\n4\n5\n6\n7\n8D\n9\n")]);
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let mut make_commit = |description, parents, tree_id| {
         tx.repo_mut()
             .new_commit(parents, tree_id)
@@ -118,7 +118,7 @@ fn test_find_recursive_merge_commits() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
@@ -197,7 +197,7 @@ fn test_rebase_descendants_sideways() {
     // | B
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -246,7 +246,7 @@ fn test_rebase_descendants_forward() {
     // |/
     // B
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -297,7 +297,7 @@ fn test_rebase_descendants_reorder() {
     // |/
     // B
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -338,7 +338,7 @@ fn test_rebase_descendants_backward() {
     // C
     // B
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -372,7 +372,7 @@ fn test_rebase_descendants_chain_becomes_branchy() {
     // B E
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -414,7 +414,7 @@ fn test_rebase_descendants_internal_merge() {
     // | B
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -458,7 +458,7 @@ fn test_rebase_descendants_external_merge() {
     // | B
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -498,7 +498,7 @@ fn test_rebase_descendants_abandon() {
     // |/
     // B
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -535,7 +535,7 @@ fn test_rebase_descendants_abandon_no_descendants() {
     // C
     // B
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -567,7 +567,7 @@ fn test_rebase_descendants_abandon_and_replace() {
     // E B
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -601,7 +601,7 @@ fn test_rebase_descendants_abandon_degenerate_merge_simplify() {
     // B C
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
@@ -637,7 +637,7 @@ fn test_rebase_descendants_abandon_degenerate_merge_preserve() {
     // B C
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
@@ -680,7 +680,7 @@ fn test_rebase_descendants_abandon_widen_merge() {
     // B C D
     //  \|/
     //   A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
@@ -718,7 +718,7 @@ fn test_rebase_descendants_multiple_sideways() {
     // | |/
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -758,7 +758,7 @@ fn test_rebase_descendants_multiple_swap() {
     // B D
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let _commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -782,7 +782,7 @@ fn test_rebase_descendants_multiple_no_descendants() {
     // B C
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
@@ -820,7 +820,7 @@ fn test_rebase_descendants_divergent_rewrite() {
     // | B2
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -878,7 +878,7 @@ fn test_rebase_descendants_repeated() {
     // | B2
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -940,7 +940,7 @@ fn test_rebase_descendants_contents() {
     // | B
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let path1 = repo_path("file1");
     let tree1 = create_tree(repo, &[(path1, "content")]);
     let commit_a = tx
@@ -1009,14 +1009,14 @@ fn test_rebase_descendants_basic_bookmark_update() {
     // B main         B2 main
     // |         =>   |
     // A              A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     tx.repo_mut()
         .set_local_bookmark_target("main".as_ref(), RefTarget::normal(commit_b.id().clone()));
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_b2 = tx.repo_mut().rewrite_commit(&commit_b).write().unwrap();
     tx.repo_mut().rebase_descendants().unwrap();
     assert_eq!(
@@ -1042,7 +1042,7 @@ fn test_rebase_descendants_bookmark_move_two_steps() {
     // B B2           B2
     // |/             |
     // A              A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -1050,7 +1050,7 @@ fn test_rebase_descendants_bookmark_move_two_steps() {
         .set_local_bookmark_target("main".as_ref(), RefTarget::normal(commit_c.id().clone()));
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_b2 = tx
         .repo_mut()
         .rewrite_commit(&commit_b)
@@ -1089,7 +1089,7 @@ fn test_rebase_descendants_basic_bookmark_update_with_non_local_bookmark() {
     // B main main@origin v1          | B main@origin v1
     // |                         =>   |/
     // A                              A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_b_remote_ref = RemoteRef {
@@ -1104,7 +1104,7 @@ fn test_rebase_descendants_basic_bookmark_update_with_non_local_bookmark() {
         .set_local_tag_target("v1".as_ref(), RefTarget::normal(commit_b.id().clone()));
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_b2 = tx.repo_mut().rewrite_commit(&commit_b).write().unwrap();
     tx.repo_mut().rebase_descendants().unwrap();
     assert_eq!(
@@ -1141,7 +1141,7 @@ fn test_rebase_descendants_update_bookmark_after_abandon(delete_abandoned_bookma
     // B main main@origin        C2 other
     // |                    =>   |
     // A                         A main (if delete_abandoned_bookmarks = false)
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -1157,7 +1157,7 @@ fn test_rebase_descendants_update_bookmark_after_abandon(delete_abandoned_bookma
         .set_local_bookmark_target("other".as_ref(), RefTarget::normal(commit_c.id().clone()));
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     tx.repo_mut().record_abandoned_commit(&commit_b);
     let options = RebaseOptions {
         rewrite_refs: RewriteRefsOptions {
@@ -1207,7 +1207,7 @@ fn test_rebase_descendants_update_bookmarks_after_divergent_rewrite() {
     // B main         |/B2 main?        |/B2 main?
     // |         =>   |/           =>   |/
     // A              A                 A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -1217,7 +1217,7 @@ fn test_rebase_descendants_update_bookmarks_after_divergent_rewrite() {
         .set_local_bookmark_target("other".as_ref(), RefTarget::normal(commit_c.id().clone()));
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_b2 = tx.repo_mut().rewrite_commit(&commit_b).write().unwrap();
     // Different description so they're not the same commit
     let commit_b3 = tx
@@ -1296,7 +1296,7 @@ fn test_rebase_descendants_rewrite_updates_bookmark_conflict() {
     // Bookmark "main" is a conflict removing commit A and adding commits B and C.
     // A gets rewritten as A2 and A3. B gets rewritten as B2 and B2. The bookmark
     // should become a conflict removing A and B, and adding B2, B3, C.
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit(tx.repo_mut());
     let commit_c = write_random_commit(tx.repo_mut());
@@ -1309,7 +1309,7 @@ fn test_rebase_descendants_rewrite_updates_bookmark_conflict() {
     );
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a2 = tx.repo_mut().rewrite_commit(&commit_a).write().unwrap();
     // Different description so they're not the same commit
     let commit_a3 = tx
@@ -1375,7 +1375,7 @@ fn test_rebase_descendants_rewrite_resolves_bookmark_conflict() {
     // would result in a conflict removing A and adding B2 and C. However, since C
     // is a descendant of A, and B2 is a descendant of C, the conflict gets
     // resolved to B2.
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
@@ -1388,7 +1388,7 @@ fn test_rebase_descendants_rewrite_resolves_bookmark_conflict() {
     );
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_b2 = tx
         .repo_mut()
         .rewrite_commit(&commit_b)
@@ -1423,7 +1423,7 @@ fn test_rebase_descendants_bookmark_delete_modify_abandon(delete_abandoned_bookm
     //   pointing to "0-A+0=0".
     //
     // In both cases, the bookmark should be deleted.
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     tx.repo_mut().set_local_bookmark_target(
@@ -1432,7 +1432,7 @@ fn test_rebase_descendants_bookmark_delete_modify_abandon(delete_abandoned_bookm
     );
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     tx.repo_mut().record_abandoned_commit(&commit_b);
     let options = RebaseOptions {
         rewrite_refs: RewriteRefsOptions {
@@ -1461,7 +1461,7 @@ fn test_rebase_descendants_bookmark_move_forward_abandon(delete_abandoned_bookma
     //   pointing to "A-A+C=C", so the conflict should be resolved.
     // - If delete_abandoned_bookmarks = true, that should result in the bookmark
     //   pointing to "0-A+C".
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
@@ -1475,7 +1475,7 @@ fn test_rebase_descendants_bookmark_move_forward_abandon(delete_abandoned_bookma
     );
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     tx.repo_mut().record_abandoned_commit(&commit_b);
     let options = RebaseOptions {
         rewrite_refs: RewriteRefsOptions {
@@ -1512,7 +1512,7 @@ fn test_rebase_descendants_bookmark_move_sideways_abandon(delete_abandoned_bookm
     //   pointing to "A.parent-A+C".
     // - If delete_abandoned_bookmarks = true, that should result in the bookmark
     //   pointing to "0-A+C".
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit(tx.repo_mut());
     let commit_c = write_random_commit(tx.repo_mut());
@@ -1526,7 +1526,7 @@ fn test_rebase_descendants_bookmark_move_sideways_abandon(delete_abandoned_bookm
     );
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     tx.repo_mut().record_abandoned_commit(&commit_b);
     let options = RebaseOptions {
         rewrite_refs: RewriteRefsOptions {
@@ -1564,7 +1564,7 @@ fn test_rebase_descendants_update_checkout() {
     // C B
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let ws1_name = WorkspaceNameBuf::from("ws1");
@@ -1581,7 +1581,7 @@ fn test_rebase_descendants_update_checkout() {
         .unwrap();
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_c = tx
         .repo_mut()
         .rewrite_commit(&commit_b)
@@ -1609,7 +1609,7 @@ fn test_rebase_descendants_update_checkout_abandoned() {
     // B
     // |
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let ws1_name = WorkspaceNameBuf::from("ws1");
@@ -1626,7 +1626,7 @@ fn test_rebase_descendants_update_checkout_abandoned() {
         .unwrap();
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     tx.repo_mut().record_abandoned_commit(&commit_b);
     tx.repo_mut().rebase_descendants().unwrap();
     let repo = tx.commit("test").unwrap();
@@ -1658,7 +1658,7 @@ fn test_rebase_descendants_update_checkout_abandoned_merge() {
     // B C
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
@@ -1669,7 +1669,7 @@ fn test_rebase_descendants_update_checkout_abandoned_merge() {
         .unwrap();
     let repo = tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     tx.repo_mut().record_abandoned_commit(&commit_d);
     tx.repo_mut().rebase_descendants().unwrap();
     let repo = tx.commit("test").unwrap();
@@ -1703,7 +1703,7 @@ fn test_empty_commit_option(empty_behavior: EmptyBehavior) {
     // |  \|/
     // |   B
     // A__/
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let mut_repo = tx.repo_mut();
     let create_fixed_tree = |paths: &[&str]| {
         create_tree_with(repo, |builder| {
@@ -1843,7 +1843,7 @@ fn test_rebase_abandoning_empty() {
     // |/                             |
     // A                              A
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit_a = write_random_commit(tx.repo_mut());
     let commit_b = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a]);
     let commit_c = write_random_commit_with_parents(tx.repo_mut(), &[&commit_b]);
@@ -1914,7 +1914,7 @@ fn test_commit_with_selection() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let root_tree = repo.store().root_commit().tree().unwrap();
     let commit = write_random_commit(tx.repo_mut());
     let commit_tree = commit.tree().unwrap();
@@ -1940,7 +1940,7 @@ fn test_find_duplicate_divergent_commits() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let store = repo.store();
     // We want to create the following tree with divergent changes A, B, and C:
     //     E

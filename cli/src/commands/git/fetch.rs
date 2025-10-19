@@ -129,7 +129,7 @@ pub fn cmd_git_fetch(
         .sorted()
         .collect_vec();
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
 
     let mut expansions = Vec::with_capacity(remotes.len());
     if args.tracked {

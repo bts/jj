@@ -251,7 +251,7 @@ pub(crate) fn move_to_commit(
     if args.should_edit {
         // We're editing, the target must be rewritable.
         workspace_command.check_rewritable([target.id()])?;
-        let mut tx = workspace_command.start_transaction();
+        let mut tx = workspace_command.start_transaction()?;
         tx.edit(&target)?;
         tx.finish(
             ui,
@@ -259,7 +259,7 @@ pub(crate) fn move_to_commit(
         )?;
         return Ok(());
     }
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     // Move the working-copy commit to the new parent.
     tx.check_out(&target)?;
     tx.finish(ui, format!("{cmd}: {current_short} -> {target_short}"))?;

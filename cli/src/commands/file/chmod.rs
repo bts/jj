@@ -83,7 +83,7 @@ pub(crate) fn cmd_file_chmod(
     let matcher = fileset_expression.to_matcher();
     print_unmatched_explicit_paths(ui, &workspace_command, &fileset_expression, [&tree])?;
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let store = tree.store();
     let mut tree_builder = MergedTreeBuilder::new(commit.tree_id().clone());
     for (repo_path, result) in tree.entries_matching(matcher.as_ref()) {

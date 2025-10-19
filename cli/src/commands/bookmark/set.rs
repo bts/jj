@@ -89,7 +89,7 @@ pub fn cmd_bookmark_set(
         writeln!(ui.warning_default(), "Target revision is empty.")?;
     }
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     for bookmark_name in bookmark_names {
         tx.repo_mut().set_local_bookmark_target(
             bookmark_name,

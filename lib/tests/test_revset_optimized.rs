@@ -176,7 +176,7 @@ fn test_mostly_linear() {
     // 1 2
     // |/
     // 0
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit0 = repo.store().root_commit();
     let commit1 = write_new_commit(tx.repo_mut(), "1", [&commit0]);
     let commit2 = write_new_commit(tx.repo_mut(), "2", [&commit0]);
@@ -231,7 +231,7 @@ fn test_weird_merges() {
     // 1 2 3
     //  \|/
     //   0
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit0 = repo.store().root_commit();
     let commit1 = write_new_commit(tx.repo_mut(), "1", [&commit0]);
     let commit2 = write_new_commit(tx.repo_mut(), "2", [&commit0]);
@@ -294,7 +294,7 @@ fn test_feature_branches() {
     // 0
 
     // Fetch branch 2 and 5
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit0 = repo.store().root_commit();
     let commit1 = write_new_commit(tx.repo_mut(), "1", [&commit0]);
     let commit2 = write_new_commit(tx.repo_mut(), "2", [&commit1]);
@@ -304,18 +304,18 @@ fn test_feature_branches() {
     let repo = tx.commit("a").unwrap();
 
     // Merge branch 2
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit6 = write_new_commit(tx.repo_mut(), "6", [&commit0, &commit2]);
     let repo = tx.commit("a").unwrap();
 
     // Fetch merged branch 7
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit7 = write_new_commit(tx.repo_mut(), "7", [&commit6]);
     let commit8 = write_new_commit(tx.repo_mut(), "8", [&commit6, &commit7]);
     let repo = tx.commit("a").unwrap();
 
     // Merge branch 5
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit9 = write_new_commit(tx.repo_mut(), "9", [&commit8, &commit5]);
     let commits = vec![
         commit0, commit1, commit2, commit3, commit4, commit5, commit6, commit7, commit8, commit9,
@@ -364,7 +364,7 @@ fn test_rewritten() {
     // 1 2
     // |/
     // 0
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit0 = repo.store().root_commit();
     let commit1 = write_new_commit(tx.repo_mut(), "1", [&commit0]);
     let commit2 = write_new_commit(tx.repo_mut(), "2", [&commit0]);
@@ -375,7 +375,7 @@ fn test_rewritten() {
     let repo = tx.commit("a").unwrap();
 
     // Rewrite 2, rebase 3 and 5
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit2b = tx
         .repo_mut()
         .rewrite_commit(&commits[2])
@@ -387,7 +387,7 @@ fn test_rewritten() {
     let repo = tx.commit("b").unwrap();
 
     // Abandon 4, rebase 5
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     tx.repo_mut().record_abandoned_commit(&commits[4]);
     commits.extend(rebase_descendants(tx.repo_mut()));
     let repo = tx.commit("c").unwrap();
