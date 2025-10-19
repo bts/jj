@@ -76,7 +76,7 @@ pub(crate) fn cmd_simplify_parents(
     let commit_ids_set: HashSet<_> = commit_ids.iter().cloned().collect();
     let num_orig_commits = commit_ids.len();
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let mut simplified_commits = 0;
     let mut edges = 0;
     let mut reparented_descendants = 0;

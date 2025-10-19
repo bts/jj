@@ -354,6 +354,9 @@ impl From<WorkspaceInitError> for CommandError {
             WorkspaceInitError::Path(err) => {
                 internal_error_with_message("Failed to access the repository", err)
             }
+            WorkspaceInitError::Index(err) => {
+                internal_error_with_message("Failed to access the index", err)
+            }
             WorkspaceInitError::OpHeadsStore(err) => {
                 user_error_with_message("Failed to record initial operation", err)
             }
@@ -661,6 +664,7 @@ impl From<RecoverWorkspaceError> for CommandError {
     fn from(err: RecoverWorkspaceError) -> Self {
         match err {
             RecoverWorkspaceError::Backend(err) => err.into(),
+            RecoverWorkspaceError::Index(err) => err.into(),
             RecoverWorkspaceError::Reset(err) => err.into(),
             RecoverWorkspaceError::RewriteRootCommit(err) => err.into(),
             RecoverWorkspaceError::TransactionCommit(err) => err.into(),
@@ -944,6 +948,7 @@ fn revset_resolution_error_hints(err: &RevsetResolutionError) -> Vec<String> {
         | RevsetResolutionError::AmbiguousCommitIdPrefix(_)
         | RevsetResolutionError::AmbiguousChangeIdPrefix(_)
         | RevsetResolutionError::Backend(_)
+        | RevsetResolutionError::Index(_)
         | RevsetResolutionError::Other(_) => vec![],
     }
 }

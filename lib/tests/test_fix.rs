@@ -104,7 +104,7 @@ fn test_fix_one_file() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let path1 = repo_path("file1");
     let tree1 = create_tree(repo, &[(path1, "fixme:content")]);
     let commit_a = create_commit(
@@ -145,7 +145,7 @@ fn test_fixer_does_not_change_content() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let path1 = repo_path("file1");
     let tree1 = create_tree(repo, &[(path1, "content")]);
     let commit_a = create_commit(
@@ -178,7 +178,7 @@ fn test_empty_commit() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let tree1 = create_tree(repo, &[]);
     let commit_a = create_commit(
         &mut tx,
@@ -210,7 +210,7 @@ fn test_fixer_fails() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let path1 = repo_path("file1");
     let tree1 = create_tree(repo, &[(path1, "error:boo")]);
     let commit_a = create_commit(
@@ -241,7 +241,7 @@ fn test_unchanged_file_is_not_fixed() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let path1 = repo_path("file1");
     let tree1 = create_tree(repo, &[(path1, "fixme:content")]);
     let commit_a = create_commit(
@@ -277,7 +277,7 @@ fn test_unchanged_file_is_fixed() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let path1 = repo_path("file1");
     let tree1 = create_tree(repo, &[(path1, "fixme:content")]);
     let commit_a = create_commit(
@@ -322,7 +322,7 @@ fn test_already_fixed_descendant() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let path1 = repo_path("file1");
     let tree1 = create_tree(repo, &[(path1, "fixme:content")]);
     let commit_a = create_commit(
@@ -370,7 +370,7 @@ fn test_parallel_fixer_basic() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let path1 = repo_path("file1");
     let tree1 = create_tree(repo, &[(path1, "fixme:content")]);
     let commit_a = create_commit(
@@ -411,7 +411,7 @@ fn test_parallel_fixer_fixes_files() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let tree1 = create_tree_with(repo, |builder| {
         for i in 0..100 {
             builder.file(repo_path(&format!("file{i}")), format!("fixme:content{i}"));
@@ -460,7 +460,7 @@ fn test_parallel_fixer_does_not_change_content() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let tree1 = create_tree_with(repo, |builder| {
         for i in 0..100 {
             builder.file(repo_path(&format!("file{i}")), format!("content{i}"));
@@ -496,7 +496,7 @@ fn test_parallel_fixer_no_changes_upon_partial_failure() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let tree1 = create_tree_with(repo, |builder| {
         for i in 0..100 {
             let contents = if i == 7 {
@@ -545,7 +545,7 @@ fn test_fix_multiple_revisions() {
     // | B
     // |/
     // A
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let path1 = repo_path("file1");
     let tree1 = create_tree(repo, &[(path1, "fixme:xyz")]);
     let commit_a = create_commit(

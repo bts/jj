@@ -29,7 +29,7 @@ pub fn cmd_git_export(
     _args: &GitExportArgs,
 ) -> Result<(), CommandError> {
     let mut workspace_command = command.workspace_helper(ui)?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let stats = git::export_refs(tx.repo_mut())?;
     tx.finish(ui, "export git refs")?;
     print_git_export_stats(ui, &stats)?;

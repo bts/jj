@@ -37,7 +37,7 @@ pub fn cmd_git_remote_rename(
     args: &GitRemoteRenameArgs,
 ) -> Result<(), CommandError> {
     let mut workspace_command = command.workspace_helper(ui)?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     git::rename_remote(tx.repo_mut(), &args.old, &args.new)?;
     if tx.repo().has_changes() {
         tx.finish(

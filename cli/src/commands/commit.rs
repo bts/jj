@@ -126,7 +126,7 @@ pub(crate) fn cmd_commit(
     let diff_selector =
         workspace_command.diff_selector(ui, args.tool.as_deref(), args.interactive)?;
     let text_editor = workspace_command.text_editor()?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let base_tree = commit.parent_tree(tx.repo())?;
     let format_instructions = || {
         format!(

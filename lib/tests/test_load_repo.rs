@@ -22,11 +22,11 @@ fn test_load_at_operation() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit = write_random_commit(tx.repo_mut());
     let repo = tx.commit("add commit").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     tx.repo_mut().remove_head(commit.id());
     tx.commit("remove commit").unwrap();
 

@@ -111,7 +111,7 @@ fn test_bad_locking_children(backend: TestRepoBackend) {
     let repo = &test_workspace.repo;
     let workspace_root = test_workspace.workspace.workspace_root();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let initial = write_random_commit(tx.repo_mut());
     tx.commit("test").unwrap();
 
@@ -126,7 +126,7 @@ fn test_bad_locking_children(backend: TestRepoBackend) {
     )
     .unwrap();
     let machine1_repo = machine1_workspace.repo_loader().load_at_head().unwrap();
-    let mut machine1_tx = machine1_repo.start_transaction();
+    let mut machine1_tx = machine1_repo.start_transaction().unwrap();
     let child1 = write_random_commit_with_parents(machine1_tx.repo_mut(), &[&initial]);
     machine1_tx.commit("test").unwrap();
 
@@ -141,7 +141,7 @@ fn test_bad_locking_children(backend: TestRepoBackend) {
     )
     .unwrap();
     let machine2_repo = machine2_workspace.repo_loader().load_at_head().unwrap();
-    let mut machine2_tx = machine2_repo.start_transaction();
+    let mut machine2_tx = machine2_repo.start_transaction().unwrap();
     let child2 = write_random_commit_with_parents(machine2_tx.repo_mut(), &[&initial]);
     machine2_tx.commit("test").unwrap();
 
@@ -179,7 +179,7 @@ fn test_bad_locking_interrupted(backend: TestRepoBackend) {
     let test_env = &test_workspace.env;
     let repo = &test_workspace.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let initial = write_random_commit(tx.repo_mut());
     let repo = tx.commit("test").unwrap();
 
@@ -190,7 +190,7 @@ fn test_bad_locking_interrupted(backend: TestRepoBackend) {
     let op_heads_dir = test_workspace.repo_path().join("op_heads");
     let backup_path = test_workspace.root_dir().join("backup");
     copy_directory(&op_heads_dir, &backup_path);
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     write_random_commit_with_parents(tx.repo_mut(), &[&initial]);
     let op_id = tx.commit("test").unwrap().operation().id().clone();
 

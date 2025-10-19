@@ -45,7 +45,7 @@ fn test_simplify_conflict_after_resolving_parent() {
     // rebase C2 (the rebased C) onto the resolved conflict. C3 should not have
     // a conflict since it changed an unrelated line.
     let path = repo_path("dir/file");
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let tree_a = create_tree(repo, &[(path, "abc\ndef\nghi\n")]);
     let commit_a = tx
         .repo_mut()
@@ -143,7 +143,7 @@ fn test_rebase_linearize_lossy_merge(same_change: SameChange) {
     // currently don't tell the user about the discarded change, so it's
     // surprising that the change in commit D is interpreted that way.
     let path = repo_path("foo");
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let repo_mut = tx.repo_mut();
     let tree_1 = create_tree(repo, &[(path, "1")]);
     let tree_2 = create_tree(repo, &[(path, "2")]);
@@ -205,7 +205,7 @@ fn test_rebase_on_lossy_merge(same_change: SameChange) {
     // consistent with `jj show D` and other commands for inspecting the commit,
     // so we instead get a conflict after the rebase.
     let path = repo_path("foo");
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let repo_mut = tx.repo_mut();
     let tree_1 = create_tree(repo, &[(path, "1")]);
     let tree_2 = create_tree(repo, &[(path, "2")]);

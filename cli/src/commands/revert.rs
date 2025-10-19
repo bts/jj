@@ -128,7 +128,7 @@ pub(crate) fn cmd_revert(
             })
             .collect_vec()
     };
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let original_parent_commit_ids: HashSet<_> = new_parent_ids.iter().cloned().collect();
     let new_parents: Vec<_> = new_parent_ids
         .iter()

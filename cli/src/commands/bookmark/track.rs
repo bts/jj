@@ -69,7 +69,7 @@ pub fn cmd_bookmark_track(
             symbols.push(symbol);
         }
     }
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     for &symbol in &symbols {
         tx.repo_mut().track_remote_bookmark(symbol)?;
     }

@@ -35,7 +35,7 @@ pub fn cmd_git_remote_remove(
     args: &GitRemoteRemoveArgs,
 ) -> Result<(), CommandError> {
     let mut workspace_command = command.workspace_helper(ui)?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     git::remove_remote(tx.repo_mut(), &args.remote)?;
     if tx.repo().has_changes() {
         tx.finish(ui, format!("remove git remote {}", args.remote.as_symbol()))

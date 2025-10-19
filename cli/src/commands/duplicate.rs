@@ -139,7 +139,7 @@ pub(crate) fn cmd_duplicate(
         )?)
     };
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
 
     if let Some((parent_commit_ids, children_commit_ids)) = &location
         && !parent_commit_ids.is_empty()

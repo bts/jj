@@ -133,7 +133,7 @@ pub(crate) fn cmd_diffedit(
     workspace_command.check_rewritable([target_commit.id()])?;
 
     let diff_editor = workspace_command.diff_editor(ui, args.tool.as_deref())?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let format_instructions = || {
         format!(
             "\

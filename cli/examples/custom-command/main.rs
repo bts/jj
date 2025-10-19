@@ -42,7 +42,7 @@ fn run_custom_command(
         CustomCommand::Frobnicate(args) => {
             let mut workspace_command = command_helper.workspace_helper(ui)?;
             let commit = workspace_command.resolve_single_rev(ui, &args.revision)?;
-            let mut tx = workspace_command.start_transaction();
+            let mut tx = workspace_command.start_transaction()?;
             let new_commit = tx
                 .repo_mut()
                 .rewrite_commit(&commit)

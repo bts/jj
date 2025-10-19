@@ -99,6 +99,8 @@ pub enum RevsetResolutionError {
     },
     #[error("Unexpected error from commit backend")]
     Backend(#[source] BackendError),
+    #[error("Unexpected error from index")]
+    Index(#[source] IndexError),
     #[error(transparent)]
     Other(#[from] Box<dyn std::error::Error + Send + Sync>),
 }
@@ -225,6 +227,8 @@ mod private {
 use private::ExpressionState;
 use private::ResolvedExpressionState;
 use private::UserExpressionState;
+
+use crate::index::IndexError;
 
 impl ExpressionState for UserExpressionState {
     type CommitRef = RevsetCommitRef;
@@ -2664,10 +2668,10 @@ impl ChangePrefixResolver<'_> {
             .transpose()
             .map_err(|err| RevsetResolutionError::Other(err.into()))?
             .unwrap_or(IdPrefixIndex::empty());
-        match index
+        let resolution = index
             .resolve_change_prefix(repo, prefix)
-            .map_err(|err| RevsetResolutionError::Other(err.into()))?
-        {
+            .map_err(RevsetResolutionError::Index)?;
+        match resolution {
             PrefixResolution::AmbiguousMatch => Err(
                 RevsetResolutionError::AmbiguousChangeIdPrefix(prefix.reverse_hex()),
             ),
@@ -2908,6 +2912,7 @@ impl ExpressionStateFolder<UserExpressionState, ResolvedExpressionState>
                     | RevsetResolutionError::DivergentChangeId { .. }
                     | RevsetResolutionError::ConflictedRef { .. }
                     | RevsetResolutionError::Backend(_)
+                    | RevsetResolutionError::Index(_)
                     | RevsetResolutionError::Other(_) => Err(err),
                 })
             }

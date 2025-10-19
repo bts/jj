@@ -71,7 +71,7 @@ fn test_unpublished_operation() {
     let op_id0 = repo.op_id().clone();
     assert_eq!(list_dir(&op_heads_dir), vec![repo.op_id().hex()]);
 
-    let mut tx1 = repo.start_transaction();
+    let mut tx1 = repo.start_transaction().unwrap();
     write_random_commit(tx1.repo_mut());
     let unpublished_op = tx1.write("transaction 1").unwrap();
     let op_id1 = unpublished_op.operation().id().clone();
@@ -92,7 +92,7 @@ fn test_consecutive_operations() {
     let op_id0 = repo.op_id().clone();
     assert_eq!(list_dir(&op_heads_dir), vec![repo.op_id().hex()]);
 
-    let mut tx1 = repo.start_transaction();
+    let mut tx1 = repo.start_transaction().unwrap();
     write_random_commit(tx1.repo_mut());
     let op_id1 = tx1
         .commit("transaction 1")
@@ -104,7 +104,7 @@ fn test_consecutive_operations() {
     assert_eq!(list_dir(&op_heads_dir), vec![op_id1.hex()]);
 
     let repo = repo.reload_at_head().unwrap();
-    let mut tx2 = repo.start_transaction();
+    let mut tx2 = repo.start_transaction().unwrap();
     write_random_commit(tx2.repo_mut());
     let op_id2 = tx2
         .commit("transaction 2")
@@ -133,7 +133,7 @@ fn test_concurrent_operations() {
     let op_id0 = repo.op_id().clone();
     assert_eq!(list_dir(&op_heads_dir), vec![repo.op_id().hex()]);
 
-    let mut tx1 = repo.start_transaction();
+    let mut tx1 = repo.start_transaction().unwrap();
     write_random_commit(tx1.repo_mut());
     let op_id1 = tx1
         .commit("transaction 1")
@@ -146,7 +146,7 @@ fn test_concurrent_operations() {
 
     // After both transactions have committed, we should have two op-heads on disk,
     // since they were run in parallel.
-    let mut tx2 = repo.start_transaction();
+    let mut tx2 = repo.start_transaction().unwrap();
     write_random_commit(tx2.repo_mut());
     let op_id2 = tx2
         .commit("transaction 2")
@@ -182,13 +182,13 @@ fn test_isolation() {
     let test_repo = TestRepo::init();
     let repo = &test_repo.repo;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let initial = write_random_commit_with_parents(tx.repo_mut(), &[]);
     let repo = tx.commit("test").unwrap();
 
-    let mut tx1 = repo.start_transaction();
+    let mut tx1 = repo.start_transaction().unwrap();
     let mut_repo1 = tx1.repo_mut();
-    let mut tx2 = repo.start_transaction();
+    let mut tx2 = repo.start_transaction().unwrap();
     let mut_repo2 = tx2.repo_mut();
 
     assert_heads(repo.as_ref(), vec![initial.id()]);
@@ -233,7 +233,7 @@ fn test_stored_commit_predecessors() {
     let repo = &test_repo.repo;
     let loader = repo.loader();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit1 = write_random_commit(tx.repo_mut());
     let commit2 = tx
         .repo_mut()
@@ -280,7 +280,7 @@ fn test_reparent_range_linear() {
     // A
     // 0 (initial)
     let random_tx = |repo: &Arc<ReadonlyRepo>| {
-        let mut tx = repo.start_transaction();
+        let mut tx = repo.start_transaction().unwrap();
         write_random_commit(tx.repo_mut());
         tx
     };
@@ -351,7 +351,7 @@ fn test_reparent_range_branchy() {
     // A
     // 0 (initial)
     let random_tx = |repo: &Arc<ReadonlyRepo>| {
-        let mut tx = repo.start_transaction();
+        let mut tx = repo.start_transaction().unwrap();
         write_random_commit(tx.repo_mut());
         tx
     };
@@ -490,12 +490,12 @@ fn test_reparent_discarding_predecessors(op_stores_commit_predecessors: bool) {
     //   B0      B0 B1      B1
     //   |       |  |       |
     //   A0      A0 A1   A0 A1   A2
-    let mut tx = repo_0.start_transaction();
+    let mut tx = repo_0.start_transaction().unwrap();
     let commit_a0 = write_random_commit(tx.repo_mut());
     let commit_b0 = write_random_commit_with_parents(tx.repo_mut(), &[&commit_a0]);
     let repo_1 = tx.commit("op1").unwrap();
 
-    let mut tx = repo_1.start_transaction();
+    let mut tx = repo_1.start_transaction().unwrap();
     let commit_a1 = tx
         .repo_mut()
         .rewrite_commit(&commit_a0)
@@ -507,12 +507,12 @@ fn test_reparent_discarding_predecessors(op_stores_commit_predecessors: bool) {
     tx.repo_mut().add_head(&commit_b0).unwrap(); // resurrect rewritten commits
     let repo_2 = tx.commit("op2").unwrap();
 
-    let mut tx = repo_2.start_transaction();
+    let mut tx = repo_2.start_transaction().unwrap();
     tx.repo_mut().record_abandoned_commit(&commit_b0);
     tx.repo_mut().rebase_descendants().unwrap();
     let repo_3 = tx.commit("op3").unwrap();
 
-    let mut tx = repo_3.start_transaction();
+    let mut tx = repo_3.start_transaction().unwrap();
     tx.repo_mut().record_abandoned_commit(&commit_a0);
     tx.repo_mut().record_abandoned_commit(&commit_b1);
     let commit_a2 = tx
@@ -665,7 +665,7 @@ fn test_resolve_op_id() {
     // The actual value of `i` doesn't matter, we just need to make sure we end
     // up with hashes with ambiguous prefixes.
     for i in (1..5).chain([9, 27]) {
-        let tx = repo.start_transaction();
+        let tx = repo.start_transaction().unwrap();
         let repo = tx.commit(format!("transaction {i}")).unwrap();
         operations.push(repo.operation().clone());
     }
@@ -751,7 +751,7 @@ fn test_resolve_op_parents_children() {
 
     let mut repos = Vec::new();
     for _ in 0..3 {
-        let tx = repo.start_transaction();
+        let tx = repo.start_transaction().unwrap();
         repos.push(tx.commit("test").unwrap());
         repo = repos.last().unwrap();
     }
@@ -811,8 +811,8 @@ fn test_resolve_op_parents_children() {
     );
 
     // Merge and fork
-    let tx1 = repo.start_transaction();
-    let tx2 = repo.start_transaction();
+    let tx1 = repo.start_transaction().unwrap();
+    let tx2 = repo.start_transaction().unwrap();
     let repo = testutils::commit_transactions(vec![tx1, tx2]);
     let parent_op_ids = repo.operation().parent_ids();
 
@@ -881,19 +881,20 @@ fn test_walk_ancestors() {
     // A |
     // |/
     // 0 (initial)
-    let repo_a = repo_0.start_transaction().commit("op A").unwrap();
+    let repo_a = repo_0.start_transaction().unwrap().commit("op A").unwrap();
     let repo_b = repo_0
         .start_transaction()
+        .unwrap()
         .write("op B")
         .unwrap()
         .leave_unpublished();
-    let repo_c = repo_a.start_transaction().commit("op C").unwrap();
-    let repo_d = repo_c.start_transaction().commit("op D").unwrap();
-    let tx_e = repo_d.start_transaction();
-    let tx_f = repo_c.start_transaction();
+    let repo_c = repo_a.start_transaction().unwrap().commit("op C").unwrap();
+    let repo_d = repo_c.start_transaction().unwrap().commit("op D").unwrap();
+    let tx_e = repo_d.start_transaction().unwrap();
+    let tx_f = repo_c.start_transaction().unwrap();
     let repo_g = testutils::commit_transactions(vec![tx_e, tx_f]);
     let [op_e, op_f] = op_parents(repo_g.operation());
-    let repo_h = repo_g.start_transaction().commit("op H").unwrap();
+    let repo_h = repo_g.start_transaction().unwrap().commit("op H").unwrap();
 
     // At merge, parents are visited in forward order, which isn't important.
     assert_eq!(
@@ -996,9 +997,9 @@ fn test_gc() {
     // B
     // A
     // 0 (root)
-    let empty_tx = |repo: &Arc<ReadonlyRepo>| repo.start_transaction();
+    let empty_tx = |repo: &Arc<ReadonlyRepo>| repo.start_transaction().unwrap();
     let random_tx = |repo: &Arc<ReadonlyRepo>| {
-        let mut tx = repo.start_transaction();
+        let mut tx = repo.start_transaction().unwrap();
         write_random_commit(tx.repo_mut());
         tx
     };

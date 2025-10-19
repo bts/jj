@@ -69,7 +69,7 @@ fn manual(backend: TestRepoBackend) {
     let repo = &test_workspace.repo;
 
     let repo = repo.clone();
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit1 = create_random_commit(tx.repo_mut())
         .set_sign_behavior(SignBehavior::Own)
         .write()
@@ -98,14 +98,14 @@ fn keep_on_rewrite(backend: TestRepoBackend) {
     let repo = &test_workspace.repo;
 
     let repo = repo.clone();
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit = create_random_commit(tx.repo_mut())
         .set_sign_behavior(SignBehavior::Own)
         .write()
         .unwrap();
     tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let mut_repo = tx.repo_mut();
     let rewritten = mut_repo.rewrite_commit(&commit).write().unwrap();
 
@@ -123,14 +123,14 @@ fn manual_drop_on_rewrite(backend: TestRepoBackend) {
     let repo = &test_workspace.repo;
 
     let repo = repo.clone();
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit = create_random_commit(tx.repo_mut())
         .set_sign_behavior(SignBehavior::Own)
         .write()
         .unwrap();
     tx.commit("test").unwrap();
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let mut_repo = tx.repo_mut();
     let rewritten = mut_repo
         .rewrite_commit(&commit)
@@ -152,7 +152,7 @@ fn forced(backend: TestRepoBackend) {
     let repo = &test_workspace.repo;
 
     let repo = repo.clone();
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit = create_random_commit(tx.repo_mut())
         .set_author(someone_else())
         .write()
@@ -173,7 +173,7 @@ fn configured(backend: TestRepoBackend) {
     let repo = &test_workspace.repo;
 
     let repo = repo.clone();
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit = write_random_commit(tx.repo_mut());
     tx.commit("test").unwrap();
 
@@ -191,7 +191,7 @@ fn drop_behavior(backend: TestRepoBackend) {
     let repo = &test_workspace.repo;
 
     let repo = repo.clone();
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let commit = create_random_commit(tx.repo_mut())
         .set_sign_behavior(SignBehavior::Own)
         .write()
@@ -201,7 +201,7 @@ fn drop_behavior(backend: TestRepoBackend) {
     let original_commit = repo.store().get_commit(commit.id()).unwrap();
     assert_eq!(original_commit.verification().unwrap(), good_verification());
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     let mut_repo = tx.repo_mut();
     let rewritten = mut_repo.rewrite_commit(&original_commit).write().unwrap();
 

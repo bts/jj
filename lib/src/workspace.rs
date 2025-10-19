@@ -31,6 +31,7 @@ use crate::file_util;
 use crate::file_util::BadPathEncoding;
 use crate::file_util::IoResultExt as _;
 use crate::file_util::PathError;
+use crate::index::IndexError;
 use crate::local_working_copy::LocalWorkingCopy;
 use crate::local_working_copy::LocalWorkingCopyFactory;
 use crate::op_heads_store::OpHeadsStoreError;
@@ -70,6 +71,8 @@ pub enum WorkspaceInitError {
     EncodeRepoPath(#[source] BadPathEncoding),
     #[error(transparent)]
     CheckOutCommit(#[from] CheckOutCommitError),
+    #[error(transparent)]
+    Index(#[from] IndexError),
     #[error(transparent)]
     WorkingCopyState(#[from] WorkingCopyStateError),
     #[error(transparent)]
@@ -136,7 +139,7 @@ fn init_working_copy(
     let working_copy_state_path = jj_dir.join("working_copy");
     std::fs::create_dir(&working_copy_state_path).context(&working_copy_state_path)?;
 
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction()?;
     tx.repo_mut()
         .check_out(workspace_name.clone(), &repo.store().root_commit())?;
     let repo = tx.commit(format!("add workspace '{}'", workspace_name.as_symbol()))?;

@@ -187,7 +187,7 @@ fn do_init(
             workspace_command.maybe_snapshot(ui)?;
             maybe_set_repository_level_trunk_alias(ui, &workspace_command)?;
             if !workspace_command.working_copy_shared_with_git() {
-                let mut tx = workspace_command.start_transaction();
+                let mut tx = workspace_command.start_transaction()?;
                 jj_lib::git::import_head(tx.repo_mut())?;
                 if let Some(git_head_id) = tx.repo().view().git_head().as_normal().cloned() {
                     let git_head_commit = tx.repo().store().get_commit(&git_head_id)?;
@@ -218,7 +218,7 @@ fn init_git_refs(
     colocated: bool,
 ) -> Result<Arc<ReadonlyRepo>, CommandError> {
     let mut git_settings = repo.settings().git_settings()?;
-    let mut tx = start_repo_transaction(&repo, string_args);
+    let mut tx = start_repo_transaction(&repo, string_args)?;
     // There should be no old refs to abandon, but enforce it.
     git_settings.abandon_unreachable_commits = false;
     let stats = git::import_refs(tx.repo_mut(), &git_settings)?;

@@ -44,7 +44,7 @@ pub fn cmd_git_remote_add(
 ) -> Result<(), CommandError> {
     let mut workspace_command = command.workspace_helper(ui)?;
     let url = absolute_git_url(command.cwd(), &args.url)?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     git::add_remote(
         tx.repo_mut(),
         &args.remote,

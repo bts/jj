@@ -150,7 +150,7 @@ pub(crate) fn cmd_fix(
         .parse_file_patterns(ui, &args.paths)?
         .to_matcher();
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let mut parallel_fixer = ParallelFileFixer::new(|store, file_to_fix| {
         fix_one_file(
             ui,

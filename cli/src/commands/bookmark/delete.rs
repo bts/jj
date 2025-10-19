@@ -58,7 +58,7 @@ pub fn cmd_bookmark_delete(
     let mut workspace_command = command.workspace_helper(ui)?;
     let repo = workspace_command.repo().clone();
     let matched_bookmarks = find_local_bookmarks(repo.view(), &args.names)?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     for (name, _) in &matched_bookmarks {
         tx.repo_mut()
             .set_local_bookmark_target(name, RefTarget::absent());

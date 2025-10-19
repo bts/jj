@@ -216,7 +216,7 @@ fn create_conflict_snapshot_and_read(extra_setting: &str) -> Vec<u8> {
         "a\r\n",
     );
     let tree = test_workspace.snapshot().unwrap();
-    let mut tx = test_workspace.repo.start_transaction();
+    let mut tx = test_workspace.repo.start_transaction().unwrap();
     let parent1_commit = tx
         .repo_mut()
         .new_commit(vec![root_commit.id().clone()], tree.id())
@@ -234,7 +234,7 @@ fn create_conflict_snapshot_and_read(extra_setting: &str) -> Vec<u8> {
         "b\r\n",
     );
     let tree = test_workspace.snapshot().unwrap();
-    let mut tx = test_workspace.repo.start_transaction();
+    let mut tx = test_workspace.repo.start_transaction().unwrap();
     let parent2_commit = tx
         .repo_mut()
         .new_commit(vec![root_commit.id().clone()], tree.id())
@@ -417,7 +417,7 @@ fn test_eol_conversion_update_conflicts(
     // |/
     // (empty)
     let root_commit = test_workspace.repo.store().root_commit();
-    let mut tx = test_workspace.repo.start_transaction();
+    let mut tx = test_workspace.repo.start_transaction().unwrap();
     let tree = testutils::create_tree(&test_workspace.repo, &[(file_repo_path, parent1_contents)]);
     let parent1_commit = tx
         .repo_mut()

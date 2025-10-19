@@ -33,6 +33,7 @@ use crate::commit::Commit;
 use crate::dag_walk;
 use crate::gitignore::GitIgnoreError;
 use crate::gitignore::GitIgnoreFile;
+use crate::index::IndexError;
 use crate::matchers::Matcher;
 use crate::op_store::OpStoreError;
 use crate::op_store::OperationId;
@@ -398,6 +399,9 @@ pub enum RecoverWorkspaceError {
     /// Backend error.
     #[error(transparent)]
     Backend(#[from] BackendError),
+    /// Index error.
+    #[error(transparent)]
+    Index(#[from] IndexError),
     /// Error during checkout.
     #[error(transparent)]
     Reset(#[from] ResetError),
@@ -419,7 +423,7 @@ pub fn create_and_check_out_recovery_commit(
     workspace_name: WorkspaceNameBuf,
     description: &str,
 ) -> Result<(Arc<ReadonlyRepo>, Commit), RecoverWorkspaceError> {
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction()?;
     let repo_mut = tx.repo_mut();
 
     let commit_id = repo

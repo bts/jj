@@ -65,7 +65,7 @@ pub fn cmd_bookmark_rename(
         )));
     }
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     tx.repo_mut()
         .set_local_bookmark_target(new_bookmark, ref_target);
     tx.repo_mut()

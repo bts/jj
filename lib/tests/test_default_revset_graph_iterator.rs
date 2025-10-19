@@ -62,7 +62,7 @@ fn test_graph_iterator_linearized(skip_transitive_edges: bool, padding: u32) {
     // A         ~
     // |
     // root
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     // Pad commits to move interesting parts to boundary of u64 bit set
     for _ in 0..padding {
         write_random_commit(tx.repo_mut());
@@ -103,7 +103,7 @@ fn test_graph_iterator_virtual_octopus(skip_transitive_edges: bool, padding: u32
     // A B C        A B C
     //  \|/         ~ ~ ~
     //  root
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     // Pad commits to move interesting parts to boundary of u64 bit set
     for _ in 0..padding {
         write_random_commit(tx.repo_mut());
@@ -158,7 +158,7 @@ fn test_graph_iterator_simple_fork(skip_transitive_edges: bool, padding: u32) {
     // A
     // |
     // root
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     // Pad commits to move interesting parts to boundary of u64 bit set
     for _ in 0..padding {
         write_random_commit(tx.repo_mut());
@@ -201,7 +201,7 @@ fn test_graph_iterator_multiple_missing(skip_transitive_edges: bool, padding: u3
     // a B c       ~
     //  \|/
     //  root
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     // Pad commits to move interesting parts to boundary of u64 bit set
     for _ in 0..padding {
         write_random_commit(tx.repo_mut());
@@ -249,7 +249,7 @@ fn test_graph_iterator_edge_to_ancestor(skip_transitive_edges: bool, padding: u3
     //   a
     //   |
     //  root
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     // Pad commits to move interesting parts to boundary of u64 bit set
     for _ in 0..padding {
         write_random_commit(tx.repo_mut());
@@ -303,7 +303,7 @@ fn test_graph_iterator_edge_escapes_from_(skip_transitive_edges: bool, padding: 
     //   A
     //   |
     //  root
-    let mut tx = repo.start_transaction();
+    let mut tx = repo.start_transaction().unwrap();
     // Pad commits to move interesting parts to boundary of u64 bit set
     for _ in 0..padding {
         write_random_commit(tx.repo_mut());

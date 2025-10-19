@@ -319,9 +319,9 @@ impl ReadonlyRepo {
         self.loader.settings()
     }
 
-    pub fn start_transaction(self: &Arc<Self>) -> Transaction {
-        let mut_repo = MutableRepo::new(self.clone(), self.readonly_index(), &self.view);
-        Transaction::new(mut_repo, self.settings())
+    pub fn start_transaction(self: &Arc<Self>) -> IndexResult<Transaction> {
+        let mut_repo = MutableRepo::new(self.clone(), self.readonly_index(), &self.view)?;
+        Ok(Transaction::new(mut_repo, self.settings()))
     }
 
     pub fn reload_at_head(&self) -> Result<Arc<Self>, RepoLoaderError> {
@@ -811,7 +811,7 @@ impl RepoLoader {
         };
         let final_op = if num_operations > 1 {
             let base_repo = self.load_at(&base_op)?;
-            let mut tx = base_repo.start_transaction();
+            let mut tx = base_repo.start_transaction()?;
             for other_op in operations {
                 tx.merge_operation(other_op)?;
                 tx.repo_mut().rebase_descendants()?;
@@ -895,16 +895,20 @@ pub struct MutableRepo {
 }
 
 impl MutableRepo {
-    pub fn new(base_repo: Arc<ReadonlyRepo>, index: &dyn ReadonlyIndex, view: &View) -> Self {
+    pub fn new(
+        base_repo: Arc<ReadonlyRepo>,
+        index: &dyn ReadonlyIndex,
+        view: &View,
+    ) -> IndexResult<Self> {
         let mut_view = view.clone();
-        let mut_index = index.start_modification();
-        Self {
+        let mut_index = index.start_modification()?;
+        Ok(Self {
             base_repo,
             index: mut_index,
             view: DirtyCell::with_clean(mut_view),
             commit_predecessors: Default::default(),
             parent_mapping: Default::default(),
-        }
+        })
     }
 
     pub fn base_repo(&self) -> &Arc<ReadonlyRepo> {

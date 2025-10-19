@@ -63,7 +63,7 @@ pub(crate) fn cmd_file_untrack(
 
     let working_copy_shared_with_git = workspace_command.working_copy_shared_with_git();
 
-    let mut tx = workspace_command.start_transaction().into_inner();
+    let mut tx = workspace_command.start_transaction()?.into_inner();
     let (mut locked_ws, wc_commit) = workspace_command.start_working_copy_mutation()?;
     // Create a new tree without the unwanted files
     let mut tree_builder = MergedTreeBuilder::new(wc_commit.tree_id().clone());

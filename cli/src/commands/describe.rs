@@ -159,7 +159,7 @@ pub(crate) fn cmd_describe(
     }
     let text_editor = workspace_command.text_editor()?;
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     let tx_description = match commits.as_slice() {
         [] => unreachable!(),
         [commit] => format!("describe commit {}", commit.id().hex()),

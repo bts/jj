@@ -159,7 +159,7 @@ pub fn cmd_workspace_add(
         locked_ws.finish(operation_id)?;
     }
 
-    let mut tx = new_workspace_command.start_transaction();
+    let mut tx = new_workspace_command.start_transaction()?;
 
     // If no parent revisions are specified, create a working-copy commit based
     // on the parent of the current working-copy commit.

@@ -162,7 +162,7 @@ pub trait ReadonlyIndex: Any + Send + Sync {
         heads: &mut dyn Iterator<Item = &CommitId>,
     ) -> IndexResult<Box<dyn ChangeIdIndex>>;
 
-    fn start_modification(&self) -> Box<dyn MutableIndex>;
+    fn start_modification(&self) -> IndexResult<Box<dyn MutableIndex>>;
 }
 
 impl dyn ReadonlyIndex {

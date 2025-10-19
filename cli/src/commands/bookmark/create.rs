@@ -80,7 +80,7 @@ pub fn cmd_bookmark_create(
         writeln!(ui.warning_default(), "Target revision is empty.")?;
     }
 
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
     for name in bookmark_names {
         tx.repo_mut()
             .set_local_bookmark_target(name, RefTarget::normal(target_commit.id().clone()));

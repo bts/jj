@@ -220,7 +220,7 @@ pub(crate) fn cmd_split(
         new_child_ids,
     } = args.resolve(ui, &workspace_command)?;
     let text_editor = workspace_command.text_editor()?;
-    let mut tx = workspace_command.start_transaction();
+    let mut tx = workspace_command.start_transaction()?;
 
     // Prompt the user to select the changes they want for the first commit.
     let target = select_diff(ui, &tx, &target_commit, &matcher, &diff_selector)?;
